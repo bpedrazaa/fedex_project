@@ -4,3 +4,33 @@ Transform:
 
 Description: Fedex Final Project
 Resources:
+  #Dynamo Table
+  TheaterTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: fedex-table
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+    
+  # Api gateway
+  MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: fedex-api
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: swagger.yaml
