@@ -40,9 +40,6 @@ def fedexPutEmbarked(event, context):
     
     
     # //    Send a message to the client     //
-    
-    
-    
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
