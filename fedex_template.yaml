@@ -48,7 +48,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: fedexPutEmbarked
-      Handler: fedex_requests.fedexPutEmbarked
+      Handler: task_03.fedexPutEmbarked
       Runtime: python3.6
       CodeUri: package/
       Policies:
@@ -77,7 +77,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: fedexPutRouted
-      Handler: fedex_requests.fedexPutRouted
+      Handler: task_03.fedexPutRouted
       Runtime: python3.6
       CodeUri: package/
       Policies:

@@ -38,6 +38,7 @@ def fedexPutEmbarked(event, context):
     if 'Item' in response:
         item = response['Item']
         
+        customer_id = item['customer_id']
         # Verify the last state of the package
         packaged_state = item['packaged']
         if packaged_state == "1" or packaged_state == 1:
@@ -58,14 +59,14 @@ def fedexPutEmbarked(event, context):
             return_value = "State of " + package_id + " updated to embarked!"
 
             # //    Send a message to the client     //
-            message = "Dear Customer, your package with the identifier: ***" + package_id + "*** is currently in the EMBARKED state. We will keep you informed"
+            message = f"Dear Customer. Your identifier is: {customer_id}. Your package with the identifier: *** {package_id} *** is currently in the EMBARKED state. We will keep you informed"
                  
             response_topic = topic.publish(
                 Message=message,
                 MessageAttributes={
-                    'package_id': {
+                    'customer_id': {
                         'DataType': 'String',
-                        'StringValue': str(package_id)
+                        'StringValue': str(customer_id)
                     }
                 }
             )
@@ -107,6 +108,7 @@ def fedexPutRouted(event, context):
     if 'Item' in response:
         item = response['Item']
         
+        customer_id = item['customer_id']
         # Verify the last state of the package
         embarked_state = item['embarked']
         if embarked_state == "1" or embarked_state == 1:
@@ -127,14 +129,14 @@ def fedexPutRouted(event, context):
             return_value = "State of " + package_id + " updated to routed!"
 
             # //    Send a message to the client     //
-            message = "Dear Customer, your package with the identifier: ***" + package_id + "*** is currently in the ROUTED state. We will keep you informed"
+            message = f"Dear Customer. Your identifier is: {customer_id}. Your package with the identifier: *** {package_id} *** is currently in the ROUTED state. We will keep you informed"
                  
             response_topic = topic.publish(
                 Message=message,
                 MessageAttributes={
-                    'package_id': {
+                    'customer_id': {
                         'DataType': 'String',
-                        'StringValue': str(package_id)
+                        'StringValue': str(customer_id)
                     }
                 }
             )
