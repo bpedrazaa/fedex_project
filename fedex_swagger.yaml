@@ -1,9 +1,20 @@
 openapi: 3.0.0
 
 paths:
-  /fedex/packages/{packageId}/embarked:
+  /packages/{packageId}:
     put:
-      summary: This endpoint changes the state of a package to embarked
+      summary: This endpoint saves a package to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                last_name:
+                  type: string
       parameters:
         - name: packageId
           in: path
@@ -12,12 +23,12 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutEmbarked/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putPackage/invocations"
         httpMethod: "POST"
         
-  /fedex/packages/{packageId}/routed:
+  /fedex/packages/{packageId}/packaged:
     put:
-      summary: This endpoint changes the state of a package to routed
+      summary: This endpoint changes the state of a package to packaged
       parameters:
         - name: packageId
           in: path
@@ -26,5 +37,5 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutRouted/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putPackaged/invocations"
         httpMethod: "POST"
