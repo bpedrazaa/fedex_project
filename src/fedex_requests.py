@@ -19,30 +19,77 @@ def putPackage(event, context):
     # Get the package id from the path
     path = event["path"]
     array_path = path.split("/")
-    user_id = array_path[-1]
+    customer_email = array_path[-1]
     
     body = event["body"]
     body_object = json.loads(body)
-    #next package id
+    
     packages = table.scan(
-        FilterExpression=Attr('pk').contains("package_id_"))
-    package_id = len(packages['Items'])
-    package_id = package_id + 1
-    #number of user records
-    user = table.scan(
-    FilterExpression=Attr('user_id').eq(user_id))
-    userRecords = len(user['Items'])
+    FilterExpression=Attr('pk').contains("package_id_"))
+    package_id = 'package_id_' + str(len(packages['Items']) + 1)
+#revisamos si el cliente ya esta registrado
+    currentCustomer = table.scan(
+        FilterExpression=Attr('pk').contains('customer_id_') 
+        and Attr('customer_e-mail').eq(customer_email))
+#si ya esta registrado customerRegistered sera 0 caso contrario 1
+    customerRegistered = len(currentCustomer['Items'])
+    print(str(customerRegistered))
+
+    if customerRegistered == 0:
+    #revisamos cuantos clientes tenemos para obtner el customer_id correcto 
+        registeredCustomers = table.scan(
+            FilterExpression=Attr('pk').contains('customer_id_'))
+        customer_id = 'customer_id_' + str(len(registeredCustomers['Items']) + 1)
+        table.put_item(
+            Item={
+                'pk': customer_id,
+                'sk': customer_id,
+                'name': body_object["name"],
+                'last_name': body_object["last_name"],
+                'customer_e-mail': customer_email,
+                'points': '1'
+            }
+        )
+        print("Customer " + customer_email)
+        print("Id = customer_id_" + str(customer_id))
+        print("Customer Registered Succesfully! ")
+        #SNS Subscription
+        client = boto3.client('sns')
+        response = client.subscribe(
+            TopicArn=fedex_topic_arn,
+            Protocol='email',
+            Endpoint= customer_email,
+            Attributes={
+                "FilterPolicy": "{\"package_id\": [\""+package_id+"\"]}", 
+        },
+        ReturnSubscriptionArn=True|False)
+        print("User subscribed to Fedex-Topic")
+    else:
+        print("Customer "+ customer_email + "already Registered. Adding points.")
+        currentCustomer = table.scan(
+            FilterExpression=Attr('pk').contains('customer_id_') 
+            and Attr('customer_e-mail').eq(customer_email))
+        customer_id = currentCustomer['Items'][0]['pk']
+        points = int(currentCustomer['Items'][0]['points'])+1
+    
+        table.update_item(
+            Key={
+                'pk': customer_id,
+                'sk': customer_id
+            },
+            # Update the previous state and change to the new state
+            UpdateExpression='SET points = :user_points',
+            ExpressionAttributeValues={
+                ':user_points': str(points)
+            })
+        print(customer_email+ " has " + str(points) + " points.")
+
     #Put Package
     table.put_item(
         Item={
-            'pk': 'package_id_' + str(package_id),
-            'sk': user_id,
-            'customer_id': user_id,
-            #putCustomer
-            'name': body_object["name"],
-            'last_name': body_object["last_name"],
-            'customer_e-mail': user_id,
-            
+            'pk': package_id,
+            'sk': package_id,
+            'customer_id': customer_id,
             'dimensions': body_object["dimensions"],
             'weight': body_object["weight"],
             'type': body_object["type"],
@@ -52,45 +99,13 @@ def putPackage(event, context):
             'embarked': '0',
             'routed': '0',
             'arrived': '0',
-            'delivered': '0',
-            
-            'points': '1',
+            'delivered': '0'
         }
     )
-   
-    print("User records= " + str(userRecords))
-    if userRecords > 0:
-        points = userRecords + 1
-        print("User "+ user_id + "already Registered. Adding points.")
-        table.update_item(
-                Key={
-                    'pk': 'package_id_' + str(package_id),
-                    'sk': user_id
-                },
-                # Update the previous state and change to the new state
-                UpdateExpression='SET points = :user_points',
-                ExpressionAttributeValues={
-                    ':user_points': str(points)
-                })
-        print(user_id + "has " + str(points) + " points.")
-    else:
-        print("Unregistered User")
-        #SNS Subscription
-        client = boto3.client('sns')
-        response = client.subscribe(
-        TopicArn='arn:aws:sns:us-east-1:130637864365:Fedex-Topic',
-        Protocol='email',
-        Endpoint= user_id,
-        Attributes={
-            "FilterPolicy": "{\"package_id\": [\"package_id_"+str(package_id)+"\"]}", 
-        },
-        ReturnSubscriptionArn=True|False)
-        print("User subscribed to Fedex-Topic")
-    
-    
+
     return {
         'statusCode': 200,
-        'body': json.dumps('Package saved!' + ' id = package_id_' + str(package_id))
+        'body': json.dumps('Package saved!')
     }
     
 def putPackaged(event, context):
@@ -106,12 +121,10 @@ def putPackaged(event, context):
             'sk': package_id
         }
     )
-    user_id = table.scan(
-    FilterExpression=Attr('pk').eq(package_id))
     table.update_item(
                 Key={
                     'pk': package_id,
-                    'sk': user_id['Items'][0]['sk']
+                    'sk': package_id
                 },
                 # Update the previous state and change to the new state
                 UpdateExpression='SET packaged = :packaged_state',
