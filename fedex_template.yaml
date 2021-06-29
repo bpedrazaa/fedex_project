@@ -100,3 +100,20 @@ Resources:
             RestApiId: !Ref MyAPI
             Path: "/fedex/packages/{packageId}/routed"
             Method: PUT
+  # TEST Lambda function to get distance price
+  GetDistancePrice:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetDistancePrice
+      Handler: fedex_requests.testGETPrice
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref FedexTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref FedexTable
+      Environment:
+        Variables:
+          FEDEX_TABLE: !Ref FedexTable
+          TOPIC_ARN: !Ref FedexTopic

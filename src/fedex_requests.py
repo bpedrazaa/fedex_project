@@ -2,6 +2,7 @@ import json
 import boto3
 import os
 from boto3.dynamodb.conditions import Key, Attr
+import requests
 
 # Environment Variables
 fedex_table = os.environ['FEDEX_TABLE']
@@ -150,4 +151,54 @@ def fedexPutRouted(event, context):
     return {
         'statusCode': 200,
         'body': json.dumps(return_value)
+    }
+def testGETPrice(event, context):
+    # Get package from table
+    package_id = 'package_id_01'
+    customer_id = 'customer_id_01'
+    response = table.get_item(
+        Key={
+            'pk': package_id,
+            'sk': customer_id
+        }
+    )
+    package = response['Item']
+    # Cities origin and destination
+    origin = package['origin']
+    destination = package['destination']
+    
+    # First we search in DB for distance
+    response = table.get_item(
+        Key={
+            'pk': f'city_{origin}',
+            'sk': f'city_{destination}'
+        }
+    )
+    if "Item" in response: # If we had already saved the distance we return it
+        item = response['Item']
+        distance = item['distance']
+        distance = int(distance)
+    else:
+        # Get req to Distance API
+        url = f'https://www.distance24.org/route.json?stops={origin}|{destination}'
+        distance_info = requests.get(url)
+        distance_json = distance_info.json()
+        
+        # Distance (in KM)
+        distance = distance_json['distance']
+        
+        #Save distance in Cache (DB)
+        table.put_item(
+                Item={
+                    'pk': f'city_{origin}',
+                    'sk': f'city_{destination}',
+                    'distance': str(distance)
+                }
+            )
+
+    
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
     }
