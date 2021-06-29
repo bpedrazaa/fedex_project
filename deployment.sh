@@ -1,5 +1,5 @@
 #!/bin/bash
-DEPLOYMENT_BUCKET="destination2-upb-1010"
+DEPLOYMENT_BUCKET="destination2-upb-51575"
 
 while getopts ":bdp" OPTION; do
     case $OPTION in

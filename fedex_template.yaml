@@ -100,3 +100,33 @@ Resources:
             RestApiId: !Ref MyAPI
             Path: "/fedex/packages/{packageId}/routed"
             Method: PUT
+            
+  # Lambda function to calculate discounts
+  PutRouted:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: fedexPutDiscount
+      Handler: task_2-5.fedexPutDiscount
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref FedexTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref FedexTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt FedexTopic.TopicName
+        - SNSCrudPolicy:
+            TopicName: !GetAtt FedexTopic.TopicName
+      Environment:
+        Variables:
+          FEDEX_TABLE: !Ref FedexTable
+          TOPIC_ARN: !Ref FedexTopic
+      Events:
+        PutRouted:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/fedex/package/{packageId}/customers/{customerId}/seasons/{seasonId}"
+            Method: PUT 
+  
