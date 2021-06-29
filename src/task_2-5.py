@@ -21,24 +21,24 @@ def fedexPutDiscount(event, context):
     # Get the package id and the customer id from the path
     path = event["path"]
     array_path = path.split("/")
-    package_id = array_path[2]
-    customer_id = array_path[4]
-    season_id = array_path[6]
+    package_id = array_path[-5]
+    customer_id = array_path[-3]
+    season_id = array_path[-1]
     
     # Get the info about the discounts
     #  Package item
-    try:
-        response = table.get_item(
-            Key={
-                'pk': package_id,
-                'sk': package_id
-            }
-        )
-    except ClientError as e:
-        print(e.response['Error']['Message'])
+    print(package_id)
+    response = table.get_item(
+        Key={
+            'pk': package_id,
+            'sk': package_id
+        }
+    )
+    if "Item" in response: 
+        package_dimensions = int(response['Item']['dimensions'])
+        package_weight = int(response['Item']['weight'])
     else:
-        package_dimensions = response['Item']['dimensions']
-        package_weight = response['Item']['weight']
+        print("Item not found")
     #  Customer item
     try:
         response = table.get_item(
@@ -50,7 +50,7 @@ def fedexPutDiscount(event, context):
     except ClientError as e:
         print(e.response['Error']['Message'])
     else:
-        customer_points = response['Item']['customer_points']
+        customer_points = int(response['Item']['customer_points'])
     #  Season item
     try:
         response = table.get_item(
@@ -63,8 +63,9 @@ def fedexPutDiscount(event, context):
         print(e.response['Error']['Message'])
         season_discount = 0
     else:
-        season_discount = response['Item']['season_discount']
-        
+        season_discount = int(response['Item']['season_discount'])
+    
+    print(season_discount)
     # Calculate customer discount
     if customer_points > 5 and customer_points < 11:
         customer_discount = 10
@@ -74,6 +75,8 @@ def fedexPutDiscount(event, context):
         customer_discount = 0
         
     final_discount = customer_discount + season_discount
+    
+    print(final_discount)
         
     # Price Calculation
     
