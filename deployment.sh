@@ -43,8 +43,5 @@ if [[ $WEBSITE == 1 ]]
 then
     WEBSITE_BUCKET_PATH="/fedex/s3bucket"
     WEBSITE_BUCKET=$(aws ssm get-parameters --names $WEBSITE_BUCKET_PATH --query "Parameters[0].Value" | tr -d '"')
-    #WEBSITE_BUCKET=$(aws ssm get-parameter --name $WEBSITE_BUCKET_PATH)
     aws s3 cp index.html s3://$WEBSITE_BUCKET/    
-    
-    #aws s3 cp index.html s3://fedex-customers-web/   
 fi
