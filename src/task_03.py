@@ -85,8 +85,6 @@ def fedexPutEmbarked(event, context):
     }
     
     
-
-
 # Function to change state of package to Routed
 def fedexPutRouted(event, context):
     

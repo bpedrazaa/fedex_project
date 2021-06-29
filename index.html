@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Web Page</title>
+    <!-- Add some CSS to change client UI -->
+    <style>
+    body {
+        background-color: #232F3E;
+        }
+    label, button {
+        color: #FF9900;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 40px;
+        }
+     input {
+        color: #232F3E;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 20px;
+        }
+    </style>
+    <script>
+        var url = "https://wrsm37wzn8.execute-api.us-east-2.amazonaws.com/prod/fedex/packages/"
+        // define the callAPI function that takes a first name and last name as parameters
+        var callAPI = (package_id)=>{
+            url = url + package_id
+
+            // create a JSON object with parameters for API call and store in a variable
+            var requestOptions = {
+                method: 'GET'
+            };
+
+            // make API call with parameters and use promises to get response
+            fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.log('error', error));
+        }
+    </script>
+</head>
+<body>
+    <form>
+        <label>Package Identifier :</label>
+        <input type="text" id="p_id">
+        <!-- set button onClick method to call function we defined passing input values as parameters -->
+        <button type="button" onclick="callAPI(document.getElementById('p_id').value)">Call API</button>
+    </form>
+</body>
+</html>

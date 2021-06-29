@@ -1,8 +1,11 @@
 #!/bin/bash
 DEPLOYMENT_BUCKET="destination2-upb-1010"
 
-while getopts ":bdp" OPTION; do
+while getopts ":bdpw" OPTION; do
     case $OPTION in
+    w)
+      WEBSITE=1
+      ;;
     d)
       DEPLOY=1
       ;;
@@ -34,4 +37,14 @@ fi
 if [[ $DEPLOY == 1 ]]
 then
     aws cloudformation deploy --template-file packaged-template.json --stack-name upb-fedex-project --capabilities CAPABILITY_NAMED_IAM
+fi
+
+if [[ $WEBSITE == 1 ]]
+then
+    WEBSITE_BUCKET_PATH="/fedex/s3bucket"
+    WEBSITE_BUCKET=$(aws ssm get-parameters --names $WEBSITE_BUCKET_PATH --query "Parameters[0].Value" | tr -d '"')
+    #WEBSITE_BUCKET=$(aws ssm get-parameter --name $WEBSITE_BUCKET_PATH)
+    aws s3 cp index.html s3://$WEBSITE_BUCKET/    
+    
+    #aws s3 cp index.html s3://fedex-customers-web/   
 fi
