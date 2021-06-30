@@ -3,6 +3,7 @@ Transform:
   - AWS::Serverless-2016-10-31
 Description: Fedex Final Project
 Resources:
+
   # Dynamo table
   FedexTable:
     Type: AWS::DynamoDB::Table
@@ -41,13 +42,14 @@ Resources:
       DisplayName: Fedex-Corporation
       TopicName: Fedex-Topic
     
+    
   #Lambda functions
   # Lambda function to change state to embarked of a package 
   PutEmbarked:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: fedexPutEmbarked
-      Handler: task_03.fedexPutEmbarked
+      FunctionName: putEmbarked
+      Handler: task_03.putEmbarked
       Runtime: python3.6
       CodeUri: package/
       Policies: 
@@ -68,15 +70,15 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
-            Path: "/packages/{packageId}/embarked"
+            Path: "/fedex/packages/{packageId}/embarked"
             Method: PUT
        
   # Lambda function to change state to routed of a package 
   PutRouted:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: fedexPutRouted
-      Handler: task_03.fedexPutRouted
+      FunctionName: putRouted
+      Handler: task_03.putRouted
       Runtime: python3.6
       CodeUri: package/
       Policies: 
@@ -97,7 +99,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
-            Path: "/packages/{packageId}/Routed"
+            Path: "/fedex/packages/{packageId}/routed"
             Method: PUT
           
           
@@ -187,7 +189,7 @@ Resources:
             RestApiId: !Ref MyAPI
             Path: "/fedex/packages/{packageId}/customers/{customerId}/seasons/{seasonId}"
             Method: PUT 
-                 
+            
   PutArrived:
     Type: AWS::Serverless::Function
     Properties:
@@ -195,7 +197,7 @@ Resources:
       Handler: task4.fedexPutArrived
       Runtime: python3.6
       CodeUri: package/
-      Policies:
+      Policies: 
         - DynamoDBWritePolicy:
             TableName: !Ref FedexTable
         - DynamoDBReadPolicy:
@@ -205,17 +207,18 @@ Resources:
         - SNSCrudPolicy:
             TopicName: !GetAtt FedexTopic.TopicName
       Environment:
-        Variables:
+        Variables: 
           FEDEX_TABLE: !Ref FedexTable
           TOPIC_ARN: !Ref FedexTopic
       Events:
-        PutRouted:
+        PutPackage:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
             Path: "/fedex/packages/{packageId}/arrived"
             Method: PUT
-  
+            
+            
   PutDelivered:
     Type: AWS::Serverless::Function
     Properties:
@@ -223,7 +226,7 @@ Resources:
       Handler: task4.fedexPutDelivered
       Runtime: python3.6
       CodeUri: package/
-      Policies:
+      Policies: 
         - DynamoDBWritePolicy:
             TableName: !Ref FedexTable
         - DynamoDBReadPolicy:
@@ -233,11 +236,11 @@ Resources:
         - SNSCrudPolicy:
             TopicName: !GetAtt FedexTopic.TopicName
       Environment:
-        Variables:
+        Variables: 
           FEDEX_TABLE: !Ref FedexTable
           TOPIC_ARN: !Ref FedexTopic
       Events:
-        PutRouted:
+        PutPackage:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI

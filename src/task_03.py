@@ -18,7 +18,7 @@ topic = sns.Topic(fedex_topic_arn)
 # /////////////////////////////////////////////////////////////////////////////
 
 # Function to change state of package to embarked
-def fedexPutEmbarked(event, context):
+def putEmbarked(event, context):
     
     # Get the package id from the path
     path = event["path"]
@@ -88,7 +88,7 @@ def fedexPutEmbarked(event, context):
 
 
 # Function to change state of package to Routed
-def fedexPutRouted(event, context):
+def putRouted(event, context):
     
     # Get the package id from the path
     path = event["path"]
