@@ -60,7 +60,7 @@ def putPackage(event, context):
             Protocol='email',
             Endpoint= customer_email,
             Attributes={
-                "FilterPolicy": "{\"package_id\": [\""+package_id+"\"]}", 
+                "FilterPolicy": "{\"package_id\": [\""+customer_id+"\"]}", 
         },
         ReturnSubscriptionArn=True|False)
         print("User subscribed to Fedex-Topic")
@@ -141,7 +141,7 @@ def putPackaged(event, context):
         MessageAttributes={
             'package_id': {
                 'DataType': 'String',
-                'StringValue': str(package_id)
+                'StringValue': str(response['Item']['customer_id'])
                     }
                 }
             )

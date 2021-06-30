@@ -48,7 +48,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: putPackage
-      Handler: fedex_requests.putPackage
+      Handler: T1.putPackage
       Runtime: python3.6
       CodeUri: package/
       Policies: 
@@ -78,7 +78,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: putPackaged
-      Handler: fedex_requests.putPackaged
+      Handler: T1.putPackaged
       Runtime: python3.6
       CodeUri: package/
       Policies:
