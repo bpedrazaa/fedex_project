@@ -100,3 +100,60 @@ Resources:
             RestApiId: !Ref MyAPI
             Path: "/fedex/packages/{packageId}/routed"
             Method: PUT
+            
+            
+  PutArrived:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: fedexPutArrived
+      Handler: task4.fedexPutArrived
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref FedexTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref FedexTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt FedexTopic.TopicName
+        - SNSCrudPolicy:
+            TopicName: !GetAtt FedexTopic.TopicName
+      Environment:
+        Variables:
+          FEDEX_TABLE: !Ref FedexTable
+          TOPIC_ARN: !Ref FedexTopic
+      Events:
+        PutRouted:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/fedex/packages/{packageId}/arrived"
+            Method: PUT
+  
+  PutDelivered:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: fedexPutDelivered
+      Handler: task4.fedexPutDelivered
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref FedexTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref FedexTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt FedexTopic.TopicName
+        - SNSCrudPolicy:
+            TopicName: !GetAtt FedexTopic.TopicName
+      Environment:
+        Variables:
+          FEDEX_TABLE: !Ref FedexTable
+          TOPIC_ARN: !Ref FedexTopic
+      Events:
+        PutRouted:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/fedex/packages/{packageId}/delivered"
+            Method: PUT
