@@ -73,32 +73,32 @@ Resources:
        
   # Lambda function to change state to routed of a package 
   PutRouted:
-  Type: AWS::Serverless::Function
-  Properties:
-    FunctionName: fedexPutRouted
-    Handler: task_03.fedexPutRouted
-    Runtime: python3.6
-    CodeUri: package/
-    Policies: 
-      - DynamoDBWritePolicy:
-          TableName: !Ref FedexTable
-      - DynamoDBReadPolicy:
-          TableName: !Ref FedexTable
-      - SNSPublishMessagePolicy:
-          TopicName: !GetAtt FedexTopic.TopicName
-      - SNSCrudPolicy:
-          TopicName: !GetAtt FedexTopic.TopicName
-    Environment:
-      Variables: 
-        FEDEX_TABLE: !Ref FedexTable
-        TOPIC_ARN: !Ref FedexTopic
-    Events:
-      PutPackage:
-        Type: Api
-        Properties:
-          RestApiId: !Ref MyAPI
-          Path: "/packages/{packageId}/Routed"
-          Method: PUT
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: fedexPutRouted
+      Handler: task_03.fedexPutRouted
+      Runtime: python3.6
+      CodeUri: package/
+      Policies: 
+        - DynamoDBWritePolicy:
+            TableName: !Ref FedexTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref FedexTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt FedexTopic.TopicName
+        - SNSCrudPolicy:
+            TopicName: !GetAtt FedexTopic.TopicName
+      Environment:
+        Variables: 
+          FEDEX_TABLE: !Ref FedexTable
+          TOPIC_ARN: !Ref FedexTopic
+      Events:
+        PutPackage:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/packages/{packageId}/Routed"
+            Method: PUT
           
           
   # Lambda function to put a package 

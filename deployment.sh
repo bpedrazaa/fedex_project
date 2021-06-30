@@ -1,6 +1,8 @@
 #!/bin/bash
-DEPLOYMENT_BUCKET="mysite-tc-upb-2021"
-STACK_NAME="fedex-stack"
+#DEPLOYMENT_BUCKET="mysite-tc-upb-2021"
+DEPLOYMENT_BUCKET="destination2-upb-1010"
+#STACK_NAME="fedex-stack"
+STACK_NAME="upb-fedex-project"
 
 while getopts ":bdp" OPTION; do
     case $OPTION in

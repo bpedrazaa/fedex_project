@@ -60,7 +60,7 @@ def putPackage(event, context):
             Protocol='email',
             Endpoint= customer_email,
             Attributes={
-                "FilterPolicy": "{\"package_id\": [\""+customer_id+"\"]}", 
+                "FilterPolicy": "{\"customer_id\": [\""+customer_id+"\"]}", 
         },
         ReturnSubscriptionArn=True|False)
         print("User subscribed to Fedex-Topic")
@@ -99,10 +99,13 @@ def putPackage(event, context):
             'embarked': '0',
             'routed': '0',
             'arrived': '0',
-            'delivered': '0'
+            'delivered': '0',
+            'date_arrival': 'undefined',
+            'time_arrival': 'undefined', 
+            'estimated_price':'undefined'
         }
     )
-
+    
     return {
         'statusCode': 200,
         'body': json.dumps('Package saved!')
@@ -133,15 +136,17 @@ def putPackaged(event, context):
                 })
     return_value = "State of " + package_id + " updated to packaged!"
 
-            # //    Send a message to the client     //
-    message = "Dear Customer, your package with the identifier: ***" + package_id + "*** is currently in the PACKAGED state. We will keep you informed"
+    # //    Send a message to the client     //
+    customer_id = response['Item']['customer_id']
+    message = f"Dear Customer. Your identifier is: {customer_id}. Your package with the identifier: *** {package_id} *** is currently in the PACKAGED state. We will keep you informed"
+                 
                  
     response_topic = topic.publish(
         Message=message,
         MessageAttributes={
-            'package_id': {
+            'customer_id': {
                 'DataType': 'String',
-                'StringValue': str(response['Item']['customer_id'])
+                'StringValue': str(customer_id)
                     }
                 }
             )

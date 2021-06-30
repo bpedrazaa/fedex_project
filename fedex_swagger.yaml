@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 paths:
-  /packages/{packageId}:
+  /packages/{email}:
     put:
       summary: This endpoint saves a package to the database
       requestBody:
@@ -16,10 +16,10 @@ paths:
                 last_name:
                   type: string
       parameters:
-        - name: packageId
+        - name: email
           in: path
           required: true
-          description: Package unique id
+          description: email of the user
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
@@ -38,4 +38,32 @@ paths:
         type: "aws_proxy"
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putPackaged/invocations"
+        httpMethod: "POST"
+  
+  /fedex/packages/{packageId}/embarked:
+    put:
+      summary: This endpoint changes the state of a package to embarked
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutEmbarked/invocations"
+        httpMethod: "POST"
+        
+  /fedex/packages/{packageId}/routed:
+    put:
+      summary: This endpoint changes the state of a package to routed
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutRouted/invocations"
         httpMethod: "POST"
