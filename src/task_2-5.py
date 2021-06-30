@@ -38,19 +38,24 @@ def fedexPutDiscount(event, context):
         package_dimensions = int(response['Item']['dimensions'])
         package_weight = int(response['Item']['weight'])
     else:
-        print("Item not found")
+        return {
+            'statusCode': 404,
+            'body': "The package has not found"
+        }   
     #  Customer item
-    try:
-        response = table.get_item(
-            Key={
-                'pk': customer_id,
-                'sk': customer_id
-            }
-        )
-    except ClientError as e:
-        print(e.response['Error']['Message'])
-    else:
+    response = table.get_item(
+        Key={
+            'pk': customer_id,
+            'sk': customer_id
+        }
+    )
+    if "Item" in response: 
         customer_points = int(response['Item']['customer_points'])
+    else:
+        return {
+            'statusCode': 404,
+            'body': "The customer has not found"
+        } 
     #  Season item
     try:
         response = table.get_item(
@@ -65,7 +70,7 @@ def fedexPutDiscount(event, context):
     else:
         season_discount = int(response['Item']['season_discount'])
     
-    print(season_discount)
+    
     # Calculate customer discount
     if customer_points > 5 and customer_points < 11:
         customer_discount = 10
@@ -76,7 +81,6 @@ def fedexPutDiscount(event, context):
         
     final_discount = customer_discount + season_discount
     
-    print(final_discount)
         
     # Price Calculation
     
