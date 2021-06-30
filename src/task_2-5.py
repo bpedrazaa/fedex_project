@@ -79,8 +79,9 @@ def fedexPutDiscount(event, context):
     else:
         customer_discount = 0
         
-    final_discount = customer_discount + season_discount
-    
+    final_discount = min(customer_discount,season_discount)
+    if(final_discount == 0):
+        final_discount = max(customer_discount,season_discount)
         
     # Price Calculation
     

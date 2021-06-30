@@ -185,5 +185,5 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
-            Path: "/fedex/package/{packageId}/customers/{customerId}/seasons/{seasonId}"
+            Path: "/fedex/packages/{packageId}/customers/{customerId}/seasons/{seasonId}"
             Method: PUT 

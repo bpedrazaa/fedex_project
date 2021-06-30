@@ -68,7 +68,7 @@ paths:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutRouted/invocations"
         httpMethod: "POST"
         
-  /fedex/package/{packageId}/customers/{customerId}/seasons/{seasonId}:
+  /fedex/packages/{packageId}/customers/{customerId}/seasons/{seasonId}:
     put:
       summary: This endpoint changes the state of a package to routed
       parameters:

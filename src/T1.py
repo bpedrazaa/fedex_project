@@ -44,10 +44,10 @@ def putPackage(event, context):
             Item={
                 'pk': customer_id,
                 'sk': customer_id,
-                'name': body_object["name"],
-                'last_name': body_object["last_name"],
+                'customer_name': body_object["name"],
+                'customer_last_name': body_object["last_name"],
                 'customer_e-mail': customer_email,
-                'points': '1'
+                'customer_points': '1'
             }
         )
         print("Customer " + customer_email)
