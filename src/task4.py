@@ -15,10 +15,9 @@ table = dynamodb.Table(fedex_table)
 sns = boto3.resource('sns')
 topic = sns.Topic(fedex_topic_arn)
 
-# /////////////////////////////////////////////////////////////////////////////
 
 # Function to change state of package to embarked
-def putEmbarked(event, context):
+def fedexPutArrived(event, context):
     
     # Get the package id from the path
     path = event["path"]
@@ -40,8 +39,8 @@ def putEmbarked(event, context):
         
         customer_id = item['customer_id']
         # Verify the last state of the package
-        packaged_state = item['packaged']
-        if packaged_state == "1" or packaged_state == 1:
+        routed_state = item['routed']
+        if routed_state == "1" or routed_state == 1:
             
             # UPDATE the state of the package
             table.update_item(
@@ -50,16 +49,18 @@ def putEmbarked(event, context):
                     'sk': package_id
                 },
                 # Update the previous state and change to the new state
-                UpdateExpression='SET packaged = :packaged_state, embarked = :embarked_state',
+                UpdateExpression='SET routed = :routed_state, arrived = :arrived_state, date_arrival = :date_arr, time_arrival = :time_arr',
                 ExpressionAttributeValues={
-                    ':packaged_state': '0',
-                    ':embarked_state': '1'
+                    ':routed_state': '0',
+                    ':arrived_state': '1',
+                    ':time_arr': '14:00',
+                    ':date_arr': '01-01-2020'
                 }
             )
-            return_value = "State of " + package_id + " updated to embarked!"
+            return_value = "State of " + package_id + " updated to arrived!"
 
             # //    Send a message to the client     //
-            message = f"Dear Customer. Your identifier is: {customer_id}. Your package with the identifier: *** {package_id} *** is currently in the EMBARKED state. We will keep you informed"
+            message = f"Dear Customer. Your identifier is: {customer_id}. Your package with the identifier: *** {package_id} *** is currently in the ARRIVED state. We will keep you informed"
                  
             response_topic = topic.publish(
                 Message=message,
@@ -85,8 +86,10 @@ def putEmbarked(event, context):
     }
     
     
+
+
 # Function to change state of package to Routed
-def putRouted(event, context):
+def fedexPutDelivered(event, context):
     
     # Get the package id from the path
     path = event["path"]
@@ -108,8 +111,8 @@ def putRouted(event, context):
         
         customer_id = item['customer_id']
         # Verify the last state of the package
-        embarked_state = item['embarked']
-        if embarked_state == "1" or embarked_state == 1:
+        arrived_state = item['arrived']
+        if arrived_state == "1" or arrived_state == 1:
             
             # UPDATE the state of the package
             table.update_item(
@@ -118,16 +121,16 @@ def putRouted(event, context):
                     'sk': package_id
                 },
                 # Update the previous state and change to the new state
-                UpdateExpression='SET embarked = :embarked_state, routed = :routed_state',
+                UpdateExpression='SET arrived = :arrived_state, delivered = :delivered_state',
                 ExpressionAttributeValues={
-                    ':embarked_state': '0',
-                    ':routed_state': '1'
+                    ':arrived_state': '0',
+                    ':delivered_state': '1'
                 }
             )
-            return_value = "State of " + package_id + " updated to routed!"
+            return_value = "State of " + package_id + " updated to delivered!"
 
             # //    Send a message to the client     //
-            message = f"Dear Customer. Your identifier is: {customer_id}. Your package with the identifier: *** {package_id} *** is currently in the ROUTED state. We will keep you informed"
+            message = f"Dear Customer. Your identifier is: {customer_id}. Your package with the identifier: *** {package_id} *** is currently in the DELIVERED state. We will keep you informed"
                  
             response_topic = topic.publish(
                 Message=message,
