@@ -68,7 +68,36 @@ paths:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutRouted/invocations"
         httpMethod: "POST"
         
-  /fedex/packages/{packageId}/customers/{customerId}/seasons/{seasonId}:
+  /fedex/packages/{packageId}/arrived:
+    put:
+      summary: This endpoint changes the state of a package to arrived
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutArrived/invocations"
+        httpMethod: "POST"
+        
+  /fedex/packages/{packageId}/delivered:
+    put:
+      summary: This endpoint changes the state of a package to delivered
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutDelivered/invocations"
+        httpMethod: "POST"
+        
+        
+   /fedex/packages/{packageId}/customers/{customerId}/seasons/{seasonId}:
     put:
       summary: This endpoint changes the state of a package to routed
       parameters:
