@@ -1,5 +1,8 @@
 #!/bin/bash
+#DEPLOYMENT_BUCKET="mysite-tc-upb-2021"
 DEPLOYMENT_BUCKET="destination2-upb-1010"
+#STACK_NAME="fedex-stack"
+STACK_NAME="upb-fedex-project"
 
 while getopts ":bdp" OPTION; do
     case $OPTION in
@@ -21,9 +24,6 @@ if [[ $BUILD == 1 ]]
 then
     pip3 install --target package -r requirements.txt
     cp -a src/. package/
-    # zip -r9 ../function.zip .
-    # cd ../src
-    # zip -g ../function.zip *
 fi
 
 if [[ $PACKAGE == 1 ]]
@@ -33,5 +33,5 @@ fi
 
 if [[ $DEPLOY == 1 ]]
 then
-    aws cloudformation deploy --template-file packaged-template.json --stack-name upb-fedex-project --capabilities CAPABILITY_NAMED_IAM
+    aws cloudformation deploy --template-file packaged-template.json --stack-name $STACK_NAME --capabilities CAPABILITY_NAMED_IAM
 fi
