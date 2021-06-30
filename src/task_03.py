@@ -85,8 +85,6 @@ def putEmbarked(event, context):
     }
     
     
-
-
 # Function to change state of package to Routed
 def putRouted(event, context):
     

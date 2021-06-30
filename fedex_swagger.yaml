@@ -1,6 +1,21 @@
 openapi: 3.0.0
 
 paths:
+
+  fedex/packages/{packageId}:
+    get:
+      summary: This endpoint get the information of a package
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexGetPackage/invocations"
+        httpMethod: "POST"
+
   /packages/{email}:
     put:
       summary: This endpoint saves a package to the database
@@ -26,6 +41,7 @@ paths:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putPackage/invocations"
         httpMethod: "POST"
         
+        
   /fedex/packages/{packageId}/packaged:
     put:
       summary: This endpoint changes the state of a package to packaged
@@ -39,7 +55,7 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putPackaged/invocations"
         httpMethod: "POST"
-  
+
   /fedex/packages/{packageId}/embarked:
     put:
       summary: This endpoint changes the state of a package to embarked

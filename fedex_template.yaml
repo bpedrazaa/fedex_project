@@ -4,6 +4,43 @@ Transform:
 Description: Fedex Final Project
 Resources:
 
+  # S3 Bucket
+  FedexCustomersWeb:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: fedex-customers-web
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: False
+        BlockPublicPolicy: False
+        IgnorePublicAcls: False
+        RestrictPublicBuckets: False
+  
+  # S3 Bucket Policy
+  FedexCustomersWebPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FedexCustomersWeb
+      PolicyDocument:
+        Statement:
+          - Action: s3:GetObject
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - !GetAtt FedexCustomersWeb.Arn
+                - /*
+            Principal: '*'
+
+  # # Parameter Store
+  WebSiteParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /fedex/s3bucket
+      Type: String
+      Value: !Ref FedexCustomersWeb
+  
   # Dynamo table
   FedexTable:
     Type: AWS::DynamoDB::Table
@@ -189,6 +226,29 @@ Resources:
             RestApiId: !Ref MyAPI
             Path: "/fedex/packages/{packageId}/customers/{customerId}/seasons/{seasonId}"
             Method: PUT 
+            
+            
+  # Lambda get the information of a package          
+  GetPackage:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: fedexGetPackage
+      Handler: task_06.fedexGetPackage
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref FedexTable
+      Environment:
+        Variables:
+          FEDEX_TABLE: !Ref FedexTable
+      Events:
+        GetPackage:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/fedex/packages/{packageId}"
+            Method: GET
             
   PutArrived:
     Type: AWS::Serverless::Function
