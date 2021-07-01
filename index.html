@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Web Page</title>
+    <!-- Add some CSS to change client UI -->
+    <style>
+    body {
+        background-color: #232F3E;
+        }
+    label{
+        color: #ff8520;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 40px;
+        }
+    input {
+        color: #000000;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 20px;
+        }
+    p{
+        color: #2e94d8;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 25px;
+        margin-left: 40px;
+        }
+    button{
+        color: #2e94d8;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        margin-left: 40px;
+        }
+    label.detail2{
+        color: #2e94d8;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        margin-left: 40px;
+        }
+    label.detail1{
+        color: #ff8520;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        margin-left: 40px;
+        }
+    h1{
+        color: #d0e7f7;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 30px;
+        margin-left: 40px;
+        }
+
+    .column {
+        float: left;
+        width: 50%;
+        }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+        }
+
+    </style>
+    <script>
+        var url = "https://cjsq7r4fpb.execute-api.us-east-2.amazonaws.com/prod"
+        // define the callAPI function that takes a first name and last name as parameters
+        var callAPI = (package_id)=>{
+            url = url + "/fedex/packages/" + package_id 
+
+            // create a JSON object with parameters for API call and store in a variable
+            var requestOptions = {
+                method: 'GET'
+            };
+
+            // make API call with parameters and use promises to get response
+            fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('btn_check').style.visibility  = "hidden";
+                document.getElementById('reload_page1').style.visibility  = "visible";
+
+                document.getElementById('headerOne').innerHTML  = "PACKAGE INFORMATION";  
+
+                document.getElementById('larr').innerHTML  = "Package Arrived";    
+                document.getElementById('lcid').innerHTML  = "Package Customer Identifier";  
+                document.getElementById('ldarr').innerHTML  = "Package Arrival Date";  
+                document.getElementById('ldel').innerHTML  = "Package Delivered";  
+                document.getElementById('ldes').innerHTML  = "Package Destination";  
+                document.getElementById('ldim').innerHTML  = "Package Dimensions";  
+                document.getElementById('lemb').innerHTML  = "Package Embarked"; 
+                document.getElementById('lest').innerHTML  = "Package Estimated Price";    
+                document.getElementById('lori').innerHTML  = "Package Origin";  
+                document.getElementById('lpack').innerHTML  = "Package Packaged";  
+                document.getElementById('lrou').innerHTML  = "Package Routed";  
+                document.getElementById('ltarr').innerHTML  = "Package Arrival Time";  
+                document.getElementById('ltype').innerHTML  = "Package Type" ;  
+                document.getElementById('lweight').innerHTML  = "Package Weight";  
+
+                document.getElementById('arr').innerHTML  = data.arrived;    
+                document.getElementById('cid').innerHTML  = data.customer_id;  
+                document.getElementById('darr').innerHTML  = data.date_arrival;  
+                document.getElementById('del').innerHTML  = data.delivered;  
+                document.getElementById('des').innerHTML  = data.destination;  
+                document.getElementById('dim').innerHTML  = data.dimensions;  
+                document.getElementById('emb').innerHTML  = data.embarked; 
+                document.getElementById('est').innerHTML  = data.estimated_price;    
+                document.getElementById('ori').innerHTML  = data.origin;  
+                document.getElementById('pack').innerHTML  = data.packaged;  
+                document.getElementById('rou').innerHTML  = data.routed;  
+                document.getElementById('tarr').innerHTML  = data.time_arrival;  
+                document.getElementById('type').innerHTML  = data.type;  
+                document.getElementById('weight').innerHTML  = data.weight;  
+
+            })
+            .catch(error => {
+                console.log('error', error)
+                document.getElementById('btn_check').style.visibility  = "hidden";
+                document.getElementById('headerOne').innerHTML  = "UNABLE TO GET INFORMATION OF THE PACKAGE"; 
+                document.getElementById('reload_page').style.visibility  = "visible";
+            });
+        }
+    </script>
+</head>
+<body>
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flofrev.net%2Fwp-content%2Fphotos%2F2017%2F04%2Ffedex_logo_free-768x215.png&f=1&nofb=1" alt="FEDEX">
+    <div style="text-align:center">
+        <form id="package_form"> 
+            <p> Check the information of your package</p>
+            <label>Package Identifier :</label>
+            <input type="text" id="p_id">
+            <!-- set button onClick method to call function we defined passing input values as parameters -->
+            <button id="btn_check" type="button" onclick="callAPI(document.getElementById('p_id').value)">CHECK</button>
+            <button id="reload_page1" type="button" onclick="window.location.reload()" style="visibility:hidden">TRY AGAIN</button>
+            <br/> <br/>
+    </div>
+
+    <h1 id="headerOne"> </h1>
+    <button id="reload_page" type="button" onclick="window.location.reload()" style="visibility:hidden">TRY AGAIN</button>
+
+    <div class="row">
+
+        <div class="column">
+            <label id = "larr" class="detail1"> </label> <br/>
+            <label id = "lcid" class="detail1"> </label> <br/>
+            <label id = "ldarr" class="detail1"> </label> <br/>
+            <label id = "ldel" class="detail1"> </label> <br/>
+            <label id = "ldes" class="detail1"> </label> <br/>
+            <label id = "ldim" class="detail1"> </label> <br/>
+            <label id = "lemb" class="detail1"> </label> <br/>
+            <label id = "lest" class="detail1"> </label> <br/>
+            <label id = "lori" class="detail1"> </label> <br/>
+            <label id = "lpack" class="detail1"> </label> <br/>
+            <label id = "lrou" class="detail1"> </label> <br/>
+            <label id = "ltarr" class="detail1"> </label> <br/>
+            <label id = "ltype" class="detail1"> </label> <br/>
+            <label id = "lweight" class="detail1"> </label> <br/>
+        </div>
+
+        <div class="column">
+            <label id="arr" class="detail2"> </label> <br/>
+            <label id="cid" class="detail2">  </label> <br/>
+            <label id="darr" class="detail2">  </label> <br/>
+            <label id="del" class="detail2">  </label> <br/>
+            <label id="des" class="detail2">  </label> <br/>
+            <label id="dim" class="detail2">  </label> <br/>
+            <label id="emb" class="detail2">  </label> <br/>
+            <label id="est" class="detail2">  </label> <br/>
+            <label id="ori" class="detail2">  </label> <br/>
+            <label id="pack" class="detail2">  </label> <br/>
+            <label id="rou" class="detail2">  </label> <br/>
+            <label id="tarr" class="detail2">  </label> <br/>
+            <label id="type" class="detail2">  </label> <br/>
+            <label id="weight" class="detail2">  </label> <br/>
+        </div>         
+    </div>
+
+</body>
+</html>

@@ -1,8 +1,12 @@
 #!/bin/bash
 DEPLOYMENT_BUCKET="destination2-upb-1010"
+STACK_NAME="upb-fedex-project"
 
-while getopts ":bdp" OPTION; do
+while getopts ":bdpw" OPTION; do
     case $OPTION in
+    w)
+      WEBSITE=1
+      ;;
     d)
       DEPLOY=1
       ;;
@@ -21,9 +25,6 @@ if [[ $BUILD == 1 ]]
 then
     pip3 install --target package -r requirements.txt
     cp -a src/. package/
-    # zip -r9 ../function.zip .
-    # cd ../src
-    # zip -g ../function.zip *
 fi
 
 if [[ $PACKAGE == 1 ]]
@@ -33,5 +34,12 @@ fi
 
 if [[ $DEPLOY == 1 ]]
 then
-    aws cloudformation deploy --template-file packaged-template.json --stack-name upb-fedex-project --capabilities CAPABILITY_NAMED_IAM
+  aws cloudformation deploy --template-file packaged-template.json --stack-name $STACK_NAME --capabilities CAPABILITY_NAMED_IAM
+fi
+
+if [[ $WEBSITE == 1 ]]
+then
+    WEBSITE_BUCKET_PATH="/fedex/s3bucket"
+    WEBSITE_BUCKET=$(aws ssm get-parameters --names $WEBSITE_BUCKET_PATH --query "Parameters[0].Value" | tr -d '"')
+    aws s3 cp index.html s3://$WEBSITE_BUCKET/    
 fi

@@ -1,0 +1,136 @@
+openapi: 3.0.0
+
+paths:
+
+  /fedex/packages/{packageId}:
+    get:
+      summary: This endpoint get the information of a package
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexGetPackage/invocations"
+        httpMethod: "POST"
+
+  /fedex/packages/{user_email}:
+    put:
+      summary: This endpoint saves a package to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                last_name:
+                  type: string
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: email of the user
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutPackage/invocations"
+        httpMethod: "POST"
+        
+        
+  /fedex/packages/{packageId}/packaged:
+    put:
+      summary: This endpoint changes the state of a package to packaged
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutPackaged/invocations"
+        httpMethod: "POST"
+
+  /fedex/packages/{packageId}/embarked:
+    put:
+      summary: This endpoint changes the state of a package to embarked
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutEmbarked/invocations"
+        httpMethod: "POST"
+        
+  /fedex/packages/{packageId}/routed:
+    put:
+      summary: This endpoint changes the state of a package to routed
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutRouted/invocations"
+        httpMethod: "POST"
+        
+  /fedex/packages/{packageId}/customers/{customerId}/seasons/{seasonId}:
+    put:
+      summary: This endpoint changes the state of a package to routed
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+        - name: customerId
+          in: path
+          required: true
+          description: Customer unique id
+        - name: seasonId
+          in: path
+          required: false
+          description: Season unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutDiscount/invocations"
+        httpMethod: "POST"
+        
+  /fedex/packages/{packageId}/arrived:
+    put:
+      summary: This endpoint changes the state of a package to arrived
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutArrived/invocations"
+        httpMethod: "POST"
+        
+  /fedex/packages/{packageId}/delivered:
+    put:
+      summary: This endpoint changes the state of a package to delivered
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          description: Package unique id
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutDelivered/invocations"
+        httpMethod: "POST"
+        
