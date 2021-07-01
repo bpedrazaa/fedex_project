@@ -15,7 +15,7 @@ table = dynamodb.Table(fedex_table)
 sns = boto3.resource('sns')
 topic = sns.Topic(fedex_topic_arn)
 
-def putPackage(event, context):
+def fedexPutPackage(event, context):
     # Get the package id from the path
     path = event["path"]
     array_path = path.split("/")
@@ -111,7 +111,7 @@ def putPackage(event, context):
         'body': json.dumps('Package saved!')
     }
     
-def putPackaged(event, context):
+def fedexPutPackaged(event, context):
     
     path = event["path"]
     array_path = path.split("/")

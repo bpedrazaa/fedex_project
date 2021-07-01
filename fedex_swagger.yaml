@@ -2,7 +2,7 @@ openapi: 3.0.0
 
 paths:
 
-  fedex/packages/{packageId}:
+  /fedex/packages/{packageId}:
     get:
       summary: This endpoint get the information of a package
       parameters:
@@ -16,7 +16,7 @@ paths:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexGetPackage/invocations"
         httpMethod: "POST"
 
-  /packages/{email}:
+  /fedex/packages/{user_email}:
     put:
       summary: This endpoint saves a package to the database
       requestBody:
@@ -38,7 +38,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putPackage/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutPackage/invocations"
         httpMethod: "POST"
         
         
@@ -53,7 +53,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putPackaged/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutPackaged/invocations"
         httpMethod: "POST"
 
   /fedex/packages/{packageId}/embarked:
@@ -67,7 +67,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putEmbarked/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutEmbarked/invocations"
         httpMethod: "POST"
         
   /fedex/packages/{packageId}/routed:
@@ -81,7 +81,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putRouted/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:fedexPutRouted/invocations"
         httpMethod: "POST"
         
   /fedex/packages/{packageId}/customers/{customerId}/seasons/{seasonId}:

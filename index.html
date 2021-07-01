@@ -64,10 +64,10 @@
 
     </style>
     <script>
-        var url = "https://wrsm37wzn8.execute-api.us-east-2.amazonaws.com/prod/fedex/packages/"
+        var url = "https://cjsq7r4fpb.execute-api.us-east-2.amazonaws.com/prod"
         // define the callAPI function that takes a first name and last name as parameters
         var callAPI = (package_id)=>{
-            url = url + package_id
+            url = url + "/fedex/packages/" + package_id 
 
             // create a JSON object with parameters for API call and store in a variable
             var requestOptions = {
