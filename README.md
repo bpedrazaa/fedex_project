@@ -8,7 +8,7 @@ The following application simulate the backend of a delivery company like fedex.
 ## Creation of package
 To put a package into the database you need to make the method PUT with the following format:
 
-*/fedex/packages/{user_email>*
+*/fedex/packages/{user_email}*
 
 This will registrate your package with an unique identifier, and will register you the customer to into the database.
 It is important that the body of your request needs to look like this.
