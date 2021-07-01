@@ -5,8 +5,6 @@ The following application simulate the backend of a delivery company like fedex.
 ![Fedex_diagram](https://user-images.githubusercontent.com/81981552/124055582-27eba600-d9f2-11eb-8751-7cc8fe63a17c.jpeg)
 
 ## Application use
-There are some important steps and observations to do in order to use application correctly.
-
 ## Creation of package
 To put a package into the database you need to make the method PUT with the following format:
 
@@ -28,10 +26,10 @@ It is important that the body of your request needs to look like this.
 After you register the package a notification will pop up in your email, this is a notification that the corporation sends you in order that you can receive information of your package.
 Do not forget to accept this confirmation or we will be unable to inform you.
 
-**The followig parts are the job of an employee of the company:**
+**The following parts are the job of an employee of the company:**
 
 ## Calculate the estimated price with the discounts that are available
-To calculate the estimated price of a package within a season that contain a discount it is mandatory that the table have an item with this structure:
+To calculate the estimated price of a package within a season that contain a discount it is mandatory for the table to have an item with this structure:
 
     {
       "pk": " <season_id> ",
@@ -47,7 +45,7 @@ With this done, is required to make the method PUT with the following format:
 This will update the table adding the estimated price to pay.
 
 ## Change state of package
-To change the state of a package to packaged. embarked, routed, arrived or delivered is required to make the method PUT with one of the following format:
+To change the state of a package to packaged, embarked, routed, arrived or delivered is required to make the method PUT with one of the following format:
 
 */fedex/packages/{packageId}/packaged*
 */fedex/packages/{packageId}/embarked*
