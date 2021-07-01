@@ -47,11 +47,7 @@ This will update the table adding the estimated price to pay.
 ## Change state of package
 To change the state of a package to packaged, embarked, routed, arrived or delivered is required to make the method PUT with one of the following format:
 
-*/fedex/packages/{packageId}/packaged*
-*/fedex/packages/{packageId}/embarked*
-*/fedex/packages/{packageId}/routed*
-*/fedex/packages/{packageId}/arrived*
-*/fedex/packages/{packageId}/delivered*
+*/fedex/packages/{packageId}/{stateName}*
 
 This will change the state in the table and send the client an email with the information of the change. 
 
