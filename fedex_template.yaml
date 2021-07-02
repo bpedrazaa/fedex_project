@@ -108,7 +108,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
-            Path: "fedex/packages/{user_email}"
+            Path: "/fedex/packages/{user_email}"
             Method: PUT
             
   # Lambda function to change state to routed of a packaged   
